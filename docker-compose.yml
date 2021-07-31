@@ -5,7 +5,7 @@ services:
     image: redis:alpine
     container_name: redis
     networks:
-      - laravel-correndo-provas
+      - laravel-network
     restart: unless-stopped
 
   nginx:
@@ -16,7 +16,7 @@ services:
       - ./laravel-app:/application:rw
       - ./config/nginx/templates:/etc/nginx/templates:rw,cached
     networks:
-      - laravel-correndo-provas
+      - laravel-network
     ports:
       - "80:80"
     environment: 
@@ -38,7 +38,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - laravel-correndo-provas
+      - laravel-network
 
   php-fpm:
     build: 
@@ -49,9 +49,9 @@ services:
       - ./laravel-app:/application:rw
       - ./config/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
     networks:
-      - laravel-correndo-provas
+      - laravel-network
     restart: unless-stopped
 
 
 networks:
-  laravel-correndo-provas:
+  laravel-network:
