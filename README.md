@@ -17,7 +17,7 @@ cd Laravel-Postrgres-Redis-with-Docker
 cp .env.example .env
 ```
 
-Change the varialbes in **.env**.
+Change the variables in **.env**.
 
 Copy you laravel application in **laravel-app** folder at ***root*** path.
 
