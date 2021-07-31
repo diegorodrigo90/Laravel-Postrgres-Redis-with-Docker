@@ -1,0 +1,57 @@
+version: "3.1"
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    networks:
+      - laravel-correndo-provas
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: agendamento
+    working_dir: /application
+    volumes:
+      - ./laravel-app:/application:rw
+      - ./config/nginx/templates:/etc/nginx/templates:rw,cached
+    networks:
+      - laravel-correndo-provas
+    ports:
+      - "80:80"
+    environment: 
+      TZ: America/Sao_Paulo
+    depends_on: 
+      - php-fpm
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres
+    container_name: ${PROJECT_NAME}-postgres
+    volumes:
+        - "./data/postgres:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    networks:
+      - laravel-correndo-provas
+
+  php-fpm:
+    build: 
+      context: config/php-fpm
+    container_name:  php-fpm
+    working_dir: /application
+    volumes:
+      - ./laravel-app:/application:rw
+      - ./config/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+    networks:
+      - laravel-correndo-provas
+    restart: unless-stopped
+
+
+networks:
+  laravel-correndo-provas:
